@@ -23,6 +23,7 @@ export default function App($app) {
       nodes: this.state.nodes
     },
     onClick: async (node) => {
+      console.log(node)
       if (node.type === 'DIRECTORY') {
         console.log('directory');
         const nextNodes = await request(node.id);

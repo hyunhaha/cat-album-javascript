@@ -7,12 +7,13 @@ export default function Breadcrumb({ $app, initialState }) {
 
   this.setState = (nextState) => {
     this.state = nextState;
+    console.log(this.state)
     this.render()
   }
 
   this.render = () => {
-    this.$target.innerHTML = `<div>root</div>${this.state.map(
-      (node, idx) => `<div class="nav_item" data-index="${idx}>${node.name}</div>`).join('')}`
+    this.$target.innerHTML = `<div>root</div>
+    ${this.state.map((node, idx) => `<div class="nav-item" data-index="${idx}">${node.name}</div>`).join('')}`;//따옴표 빼먹었음
   }
 
 }
