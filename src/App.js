@@ -19,6 +19,13 @@ export default function App($app) {
     initialState: {
       isRoot: this.state.isRoot,
       nodes: this.state.nodes
+    },
+    onClick: (node) => {
+      if (node.type === 'DIRECTORY') {
+        console.log('directory')
+      } else if (node.type === 'file') {
+        console.log('file')
+      }
     }
 
   })

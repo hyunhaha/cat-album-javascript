@@ -16,8 +16,7 @@ export default function Nodes({ $app, initialState, onClick }) {
       const nodeTemplate = this.state.nodes.map((node) => {
         const iconPath = node.type === 'FILE' ? './assets/file.png' : './assets/directory.png';
 
-        return `
-              <div class="Node" data-node-id="${node.id}">
+        return `<div class="Node" data-node-id="${node.id}">
                   <img src="${iconPath}">
                   <div>${node.name}</div>
               </div>`
@@ -28,8 +27,7 @@ export default function Nodes({ $app, initialState, onClick }) {
 
     this.$target.querySelectorAll('.Node').forEach($node => {
       $node.addEventListener('click', (e) => {
-        console.log('click')
-        const { nodeId } = e.target.dataset;
+        const { nodeId } = e.currentTarget.dataset;//왜 target으로 한거지??
         const selecteNode = this.state.nodes.find(node => node.id === nodeId);
 
         if (selecteNode) {
