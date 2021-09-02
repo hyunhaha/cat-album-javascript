@@ -1,6 +1,7 @@
-export default function Nodes({ $app, initialState, onClick }) {
+export default function Nodes({ $app, initialState, onClick, onBackClick }) {
   this.state = initialState;
-  this.onClick = onClick
+  this.onClick = onClick;
+  this.onBackClick = onBackClick;
 
   this.$target = document.createElement('ul');
   this.$target.className = 'Nodes'
@@ -21,13 +22,17 @@ export default function Nodes({ $app, initialState, onClick }) {
                   <div>${node.name}</div>
               </div>`
       }).join('');
-      this.$target.innerHTML = !this.state.isRoot ? `<div class="Node"><img src="./assets/prev.png"></div>${nodeTemplate}` : nodeTemplate;
+      console.log('is root', this.state.isRoot);
+      this.$target.innerHTML = !this.state.isRoot ? `<div class="Node"><img src="/assets/prev.png"></div>${nodeTemplate}` : nodeTemplate;
 
     }
 
     this.$target.querySelectorAll('.Node').forEach($node => {
       $node.addEventListener('click', (e) => {
         const { nodeId } = e.currentTarget.dataset;//왜 target으로 한거지??
+        if (!nodeId) {//directory 는 nodeId가 없음
+          this.onBackClick()
+        }
         const selecteNode = this.state.nodes.find(node => node.id === nodeId);
 
         if (selecteNode) {
