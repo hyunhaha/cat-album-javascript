@@ -1,6 +1,6 @@
 export default function Breadcrumb({ $app, initialState }) {
   this.state = initialState;
-
+  console.log(this.state)
   this.$target = document.createElement('nav');
   this.$target.className = 'Breadcrumb';
   $app.appendChild(this.$target);
@@ -12,7 +12,7 @@ export default function Breadcrumb({ $app, initialState }) {
 
   this.render = () => {
     this.$target.innerHTML = `<div>root</div>${this.state.map(
-      (node, idx) => `<div class="nav_item" data-index="${index}>${node.name}</div>`).join('')}`
+      (node, idx) => `<div class="nav_item" data-index="${idx}>${node.name}</div>`).join('')}`
   }
 
 }
