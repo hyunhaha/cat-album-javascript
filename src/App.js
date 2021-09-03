@@ -4,6 +4,8 @@ import { request } from "./api.js"
 import ImageView from './ImageView.js'
 import Loading from './Loading.js'
 
+const cache = { root: null }
+
 export default function App($app) {
   this.state = {
     isRoot: true,
@@ -33,16 +35,24 @@ export default function App($app) {
 
         if (node.type === 'DIRECTORY') {
           console.log('directory');
+          if (cache[node.id]) {
+            this.setState({
+              ...this.state,
+              depth: [...this.state.depth, node],
+              nodes: cache[node.id],
+            })
+          } else {
+            const nextNodes = await request(node.id);
+            this.setState({
+              ...this.state,
+              isRoot: false,
+              depth: [...this.state.depth, node],
+              nodes: nextNodes,
+            });
 
-          const nextNodes = await request(node.id);
-          this.setState({
-            ...this.state,
-            isRoot: false,
-            depth: [...this.state.depth, node],
-            nodes: nextNodes,
-            isLoading: false
+            cache[node.id] = nextNodes
+          }
 
-          })
         } else if (node.type === 'FILE') {
           this.setState({
             ...this.state,
@@ -62,36 +72,36 @@ export default function App($app) {
     },
     onBackClick: async () => {
       try {
-        this.setState({
-          ...this.state,
-          isLoading: true
-        })
+        // this.setState({
+        //   ...this.state,
+        //   isLoading: true
+        // })
 
         const nextState = { ...this.state };
         nextState.depth.pop();
         const prevNodeId = nextState.depth.length === 0 ? null : nextState.depth[nextState.depth.length - 1].id;
 
         if (prevNodeId === null) {//null일때 아닐때 반대로함..
-          const rootNodes = await request();
+          // const rootNodes = await request();
           this.setState({
             ...nextState,
             isRoot: true,
-            nodes: rootNodes,
+            nodes: cache.root
           });
         } else {
-          const prevNodes = await request(prevNodeId);
+          // const prevNodes = await request(prevNodeId);
           this.setState({
             ...nextState,
             isRoot: false,
-            nodes: prevNodes,
+            nodes: cache[prevNodeId]
           });
         }
       } catch (error) {
       } finally {
-        this.setState({
-          ...this.state,
-          isLoading: false
-        })
+        // this.setState({
+        //   ...this.state,
+        //   isLoading: false
+        // })
       }
 
     }
@@ -111,7 +121,7 @@ export default function App($app) {
   this.setState = (nextState) => {
     this.state = nextState;
     console.log(this.state)
-
+    console.log(cache)
     breadcrumb.setState(this.state.depth);
 
     nodes.setState({
@@ -125,18 +135,19 @@ export default function App($app) {
 
   const init = async () => {
     try {
-      // loading.toggleSpinner()
       this.setState({
         ...this.state,
         isLoading: true
       })
       const rootNodes = await request();
-      // loading.toggleSpinner()
+
       this.setState({
         ...this.state,
         isRoot: true,
         nodes: rootNodes,
       })
+
+      cache.root = rootNodes;
 
     } catch (e) {
 
