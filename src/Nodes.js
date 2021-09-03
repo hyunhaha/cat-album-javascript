@@ -26,20 +26,21 @@ export default function Nodes({ $app, initialState, onClick, onBackClick }) {
       this.$target.innerHTML = !this.state.isRoot ? `<div class="Node"><img src="/assets/prev.png"></div>${nodeTemplate}` : nodeTemplate;
 
     }
-
-    this.$target.querySelectorAll('.Node').forEach($node => {
-      $node.addEventListener('click', (e) => {
-        const { nodeId } = e.currentTarget.dataset;//왜 target으로 한거지??
-        if (!nodeId) {//directory 는 nodeId가 없음
-          this.onBackClick()
-        }
-        const selecteNode = this.state.nodes.find(node => node.id === nodeId);
-
-        if (selecteNode) {
-          this.onClick(selecteNode);
-        }
-      })
-    })
-
   }
+  this.$target.addEventListener('click', e => {
+    const $node = e.target.closest('.Node');
+    if ($node) {
+      const { nodeId } = $node.dataset;
+
+      if (!nodeId) {
+        this.onBackClick();
+        return;
+      }
+
+      const selectedNode = this.state.nodes.find(node => node.id === nodeId);
+      if (selectedNode) {
+        this.onClick(selectedNode);
+      }
+    }
+  })
 }
