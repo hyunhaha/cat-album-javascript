@@ -39,6 +39,7 @@ export default function App($app) {
           if (cache[node.id]) {
             this.setState({
               ...this.state,
+              isRoot: false,
               depth: [...this.state.depth, node],
               nodes: cache[node.id],
             })
