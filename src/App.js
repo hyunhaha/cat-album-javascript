@@ -17,7 +17,32 @@ export default function App($app) {
 
   const breadcrumb = new Breadcrumb({
     $app,
-    initialState: this.state.depth
+    initialState: this.state.depth,
+    onClick: (index) => {
+      console.log(index)
+      if (index === null) {
+        this.setState({
+          ...this.state,
+          depth: [],
+          nodes: cache.root,
+          isRoot: true,
+          selectedFilePath: null
+        })
+        return;
+      }
+
+      if (index === this.state.depth.length - 1) return
+
+      const nextState = { ...this.state };
+      const nextDepth = this.state.depth.slice(0, index + 1);
+
+      this.setState({
+        ...nextState,
+        depth: nextDepth,
+        nodes: cache[nextDepth[nextDepth.length - 1].id],
+        selectedFilePath: null
+      })
+    }
   })
 
   const nodes = new Nodes({
