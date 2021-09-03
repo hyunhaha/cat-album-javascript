@@ -86,7 +86,7 @@ export default function App($app) {
           })
         }
       } catch (error) {
-
+        throw new Error(error.messsage);
       } finally {
         this.setState({
           ...this.state,
@@ -118,6 +118,7 @@ export default function App($app) {
           });
         }
       } catch (error) {
+        throw new Error(error.messsage);
       }
     }
 
@@ -169,8 +170,8 @@ export default function App($app) {
 
       cache.root = rootNodes;
 
-    } catch (e) {
-
+    } catch (error) {
+      throw new Error(error.messsage);
     } finally {
       this.setState({
         ...this.state,
