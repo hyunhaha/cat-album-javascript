@@ -11,7 +11,7 @@ export default function App($app) {
     isRoot: true,
     nodes: [],
     depth: [],
-    seletedFilePath: null,
+    selectedFilePath: null,
     isLoading: false
   }
 
@@ -30,7 +30,8 @@ export default function App($app) {
       try {
         this.setState({
           ...this.state,
-          isLoading: true
+          isLoading: true,
+          selectedFilePath: null
         })
 
         if (node.type === 'DIRECTORY') {
@@ -57,7 +58,7 @@ export default function App($app) {
           this.setState({
             ...this.state,
             isRoot: false,
-            seletedFilePath: node.filePath,
+            selectedFilePath: node.filePath,
           })
         }
       } catch (error) {
@@ -86,14 +87,16 @@ export default function App($app) {
           this.setState({
             ...nextState,
             isRoot: true,
-            nodes: cache.root
+            nodes: cache.root,
+            selectedFilePath: null
           });
         } else {
           // const prevNodes = await request(prevNodeId);
           this.setState({
             ...nextState,
             isRoot: false,
-            nodes: cache[prevNodeId]
+            nodes: cache[prevNodeId],
+            selectedFilePath: null
           });
         }
       } catch (error) {
@@ -110,7 +113,7 @@ export default function App($app) {
 
   const imageView = new ImageView({
     $app,
-    initialState: this.state.seletedFilePath
+    initialState: this.state.selectedFilePath
   })
 
   const loading = new Loading({
@@ -129,7 +132,7 @@ export default function App($app) {
       nodes: this.state.nodes
     });
 
-    imageView.setState(this.state.seletedFilePath);
+    imageView.setState(this.state.selectedFilePath);
     loading.setState(this.state.isLoading);
   }
 
