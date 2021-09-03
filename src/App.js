@@ -2,13 +2,15 @@ import Nodes from "./Nodes.js"
 import Breadcrumb from "./Breadcrumb.js"
 import { request } from "./api.js"
 import ImageView from './ImageView.js'
+import Loading from './Loading.js'
 
 export default function App($app) {
   this.state = {
     isRoot: true,
     nodes: [],
     depth: [],
-    seletedFilePath: null
+    seletedFilePath: null,
+    isLoading: false
   }
 
   const breadcrumb = new Breadcrumb({
@@ -23,26 +25,48 @@ export default function App($app) {
       nodes: this.state.nodes
     },
     onClick: async (node) => {
-      console.log(node)
-      if (node.type === 'DIRECTORY') {
-        console.log('directory');
-        const nextNodes = await request(node.id);
+      try {
         this.setState({
           ...this.state,
-          isRoot: false,
-          depth: [...this.state.depth, node],
-          nodes: nextNodes
+          isLoading: true
         })
-      } else if (node.type === 'FILE') {
+
+        if (node.type === 'DIRECTORY') {
+          console.log('directory');
+
+          const nextNodes = await request(node.id);
+          this.setState({
+            ...this.state,
+            isRoot: false,
+            depth: [...this.state.depth, node],
+            nodes: nextNodes,
+            isLoading: false
+
+          })
+        } else if (node.type === 'FILE') {
+          this.setState({
+            ...this.state,
+            isRoot: false,
+            seletedFilePath: node.filePath,
+          })
+        }
+      } catch (error) {
+
+      } finally {
         this.setState({
           ...this.state,
-          isRoot: false,
-          seletedFilePath: node.filePath,
+          isLoading: false
         })
       }
+
     },
     onBackClick: async () => {
       try {
+        this.setState({
+          ...this.state,
+          isLoading: true
+        })
+
         const nextState = { ...this.state };
         nextState.depth.pop();
         const prevNodeId = nextState.depth.length === 0 ? null : nextState.depth[nextState.depth.length - 1].id;
@@ -52,7 +76,7 @@ export default function App($app) {
           this.setState({
             ...nextState,
             isRoot: true,
-            nodes: rootNodes
+            nodes: rootNodes,
           });
         } else {
           const prevNodes = await request(prevNodeId);
@@ -63,7 +87,11 @@ export default function App($app) {
           });
         }
       } catch (error) {
-
+      } finally {
+        this.setState({
+          ...this.state,
+          isLoading: false
+        })
       }
 
     }
@@ -73,6 +101,11 @@ export default function App($app) {
   const imageView = new ImageView({
     $app,
     initialState: this.state.seletedFilePath
+  })
+
+  const loading = new Loading({
+    $app,
+    initialState: this.state.isLoading
   })
 
   this.setState = (nextState) => {
@@ -86,19 +119,32 @@ export default function App($app) {
       nodes: this.state.nodes
     });
 
-    imageView.setState(this.state.seletedFilePath)
+    imageView.setState(this.state.seletedFilePath);
+    loading.setState(this.state.isLoading);
   }
 
   const init = async () => {
     try {
+      // loading.toggleSpinner()
+      this.setState({
+        ...this.state,
+        isLoading: true
+      })
       const rootNodes = await request();
+      // loading.toggleSpinner()
       this.setState({
         ...this.state,
         isRoot: true,
-        nodes: rootNodes
+        nodes: rootNodes,
       })
+
     } catch (e) {
 
+    } finally {
+      this.setState({
+        ...this.state,
+        isLoading: false
+      })
     }
   }
   init();
