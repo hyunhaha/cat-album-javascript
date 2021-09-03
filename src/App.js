@@ -25,7 +25,7 @@ export default function App($app) {
           depth: [],
           nodes: cache.root,
           isRoot: true,
-          selectedFilePath: null
+          // selectedFilePath: null
         })
         return;
       }
@@ -39,7 +39,7 @@ export default function App($app) {
         ...nextState,
         depth: nextDepth,
         nodes: cache[nextDepth[nextDepth.length - 1].id],
-        selectedFilePath: null
+        // selectedFilePath: null
       })
     }
   })
@@ -55,7 +55,7 @@ export default function App($app) {
         this.setState({
           ...this.state,
           isLoading: true,
-          selectedFilePath: null
+          // selectedFilePath: null
         })
 
         if (node.type === 'DIRECTORY') {
@@ -97,47 +97,41 @@ export default function App($app) {
     },
     onBackClick: async () => {
       try {
-        // this.setState({
-        //   ...this.state,
-        //   isLoading: true
-        // })
 
         const nextState = { ...this.state };
         nextState.depth.pop();
         const prevNodeId = nextState.depth.length === 0 ? null : nextState.depth[nextState.depth.length - 1].id;
 
         if (prevNodeId === null) {//null일때 아닐때 반대로함..
-          // const rootNodes = await request();
           this.setState({
             ...nextState,
             isRoot: true,
             nodes: cache.root,
-            selectedFilePath: null
+            // selectedFilePath: null
           });
         } else {
-          // const prevNodes = await request(prevNodeId);
           this.setState({
             ...nextState,
             isRoot: false,
             nodes: cache[prevNodeId],
-            selectedFilePath: null
+            // selectedFilePath: null
           });
         }
       } catch (error) {
-      } finally {
-        // this.setState({
-        //   ...this.state,
-        //   isLoading: false
-        // })
       }
-
     }
 
   })
 
   const imageView = new ImageView({
     $app,
-    initialState: this.state.selectedFilePath
+    initialState: this.state.selectedFilePath,
+    onClose: () => {
+      this.setState({
+        ...this.state,
+        selectedFilePath: null
+      })
+    }
   })
 
   const loading = new Loading({
