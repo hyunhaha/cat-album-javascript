@@ -22,7 +22,7 @@ export default function Nodes({ $app, initialState, onClick, onBackClick }) {
                   <div>${node.name}</div>
               </div>`
       }).join('');
-      console.log('is root', this.state.isRoot);
+
       this.$target.innerHTML = !this.state.isRoot ? `<div class="Node"><img src="/assets/prev.png"></div>${nodeTemplate}` : nodeTemplate;
 
     }

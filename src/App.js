@@ -19,7 +19,6 @@ export default function App($app) {
     $app,
     initialState: this.state.depth,
     onClick: (index) => {
-      console.log(index)
       if (index === null) {
         this.setState({
           ...this.state,
@@ -60,7 +59,6 @@ export default function App($app) {
         })
 
         if (node.type === 'DIRECTORY') {
-          console.log('directory');
           if (cache[node.id]) {
             this.setState({
               ...this.state,
@@ -149,8 +147,7 @@ export default function App($app) {
 
   this.setState = (nextState) => {
     this.state = nextState;
-    console.log(this.state)
-    console.log(cache)
+
     breadcrumb.setState(this.state.depth);
 
     nodes.setState({

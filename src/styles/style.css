@@ -36,6 +36,10 @@ body {
   word-break: keep-all;
 }
 
+.Node:hover {
+  cursor: pointer;
+}
+
 .Breadcrumb {
   height: 62px;
   padding: 16px;
@@ -46,6 +50,9 @@ body {
 
 .Breadcrumb > div {
   padding: 4px;
+}
+.Breadcrumb > div:hover {
+  cursor: pointer;
 }
 
 .Breadcrumb > div::after {
